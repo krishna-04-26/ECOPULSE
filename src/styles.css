@@ -3,7 +3,7 @@ body {
   margin: 0;
   font-family: "Poppins", sans-serif;
   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: white;
+  color: #ffffff;
 }
 
 /* ===== MAIN LAYOUT ===== */
@@ -16,14 +16,34 @@ body {
 .sidebar {
   width: 240px;
   padding: 30px 20px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(14px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidebar h2 {
   color: #00ff88;
-  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Sidebar Button */
+.sidebar button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #00ff88;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.sidebar button:hover {
+  background: #00cc6e;
 }
 
 /* ===== MAIN CONTENT ===== */
@@ -37,7 +57,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 25px;
-  margin-bottom: 35px;
+  margin-bottom: 40px;
 }
 
 /* ===== CHART GRID ===== */
@@ -45,17 +65,17 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 30px;
-  margin-bottom: 35px;
+  margin-bottom: 40px;
 }
 
-/* ===== GLASS CARD ===== */
+/* ===== CARD STYLE ===== */
 .card {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(15px);
   border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
-  transition: 0.3s ease;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s ease;
 }
 
 .card:hover {
@@ -66,22 +86,45 @@ body {
 .card h3 {
   margin-bottom: 15px;
   font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-/* Chart sizing */
+.card p {
+  opacity: 0.85;
+}
+
+/* ===== CHART SIZE CONTROL ===== */
 .card canvas {
   max-height: 300px;
 }
 
-/* ===== SLIDER ===== */
-input[type="range"] {
+/* ===== INPUT & BUTTON ===== */
+input[type="range"],
+input[type="number"] {
   width: 100%;
-  margin: 15px 0;
+  margin: 12px 0;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #00ff88;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background: #00cc6e;
 }
 
 /* ===== RESPONSIVE ===== */
-
-/* Tablet */
 @media (max-width: 1024px) {
   .main {
     padding: 25px;
@@ -92,7 +135,6 @@ input[type="range"] {
   }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -110,10 +152,7 @@ input[type="range"] {
     padding: 20px;
   }
 
-  .chart-grid {
-    grid-template-columns: 1fr;
-  }
-
+  .chart-grid,
   .kpi-grid {
     grid-template-columns: 1fr;
   }

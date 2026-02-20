@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./styles.css";
 import { FaBolt, FaMoneyBill, FaLeaf } from "react-icons/fa";
 
@@ -16,7 +17,6 @@ import {
 
 import { Pie, Bar, Line } from "react-chartjs-2";
 
-// ✅ Register ONCE
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -28,25 +28,36 @@ ChartJS.register(
   LineElement
 );
 
-export default function Dashboard() {
+export default function Dashboard({ energyData }) {
   const [hours, setHours] = useState(8);
 
-  const currentUsage = 350;
-  const optimizedUsage = 250;
+  // Calculate total usage dynamically
+  const currentUsage =
+    energyData.ac +
+    energyData.fans +
+    energyData.lights +
+    energyData.fridge;
+
+  const optimizedUsage = Math.round(currentUsage * 0.75);
   const savings = hours * 30 * 1.5;
 
-  // 🔥 PIE DATA
+  // PIE DATA
   const pieData = {
     labels: ["AC", "Fans", "Lights", "Fridge"],
     datasets: [
       {
-        data: [40, 20, 15, 25],
+        data: [
+          energyData.ac,
+          energyData.fans,
+          energyData.lights,
+          energyData.fridge
+        ],
         backgroundColor: ["#00ff88", "#00cfff", "#ffcc00", "#ff4d4d"],
       },
     ],
   };
 
-  // 🔥 BAR DATA
+  // BAR DATA
   const barData = {
     labels: ["Current Usage", "Optimized Usage"],
     datasets: [
@@ -59,13 +70,20 @@ export default function Dashboard() {
     ],
   };
 
-  // 🔥 LINE DATA
+  // LINE DATA
   const lineData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
         label: "Energy Trend (kWh)",
-        data: [300, 320, 340, 360, 350, currentUsage],
+        data: [
+          currentUsage - 50,
+          currentUsage - 30,
+          currentUsage - 20,
+          currentUsage - 10,
+          currentUsage - 5,
+          currentUsage
+        ],
         borderColor: "#00ff88",
         backgroundColor: "rgba(0,255,136,0.2)",
         tension: 0.4,
@@ -96,26 +114,45 @@ export default function Dashboard() {
 
   return (
     <div className="container">
+
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <h2>⚡ EcoPulse</h2>
+
+        <Link to="/">
+          <button>Enter Data</button>
+        </Link>
+
+        <Link to="/login">
+          <button>Login</button>
+        </Link>
+
+        <Link to="/signup">
+          <button>Sign Up</button>
+        </Link>
       </aside>
 
+      {/* MAIN CONTENT */}
       <main className="main">
+
         {/* KPI SECTION */}
         <div className="kpi-grid">
           <div className="card">
             <FaBolt /> {currentUsage} kWh
           </div>
+
           <div className="card">
-            <FaMoneyBill /> ₹4200
+            <FaMoneyBill /> ₹{currentUsage * 12}
           </div>
+
           <div className="card">
-            <FaLeaf /> 287 kg CO₂
+            <FaLeaf /> {Math.round(currentUsage * 0.82)} kg CO₂
           </div>
         </div>
 
         {/* CHARTS GRID */}
         <div className="chart-grid">
+
           <div className="card">
             <h3>Energy Distribution</h3>
             <Pie data={pieData} options={commonOptions} />
@@ -130,6 +167,7 @@ export default function Dashboard() {
             <h3>📈 Monthly Energy Trend</h3>
             <Line data={lineData} options={commonOptions} />
           </div>
+
         </div>
 
         {/* SIMULATOR */}
@@ -145,6 +183,7 @@ export default function Dashboard() {
           <p>AC Usage: {hours} hrs/day</p>
           <p>Estimated Savings: ₹{savings}</p>
         </div>
+
       </main>
     </div>
   );
