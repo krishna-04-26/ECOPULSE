@@ -31,7 +31,7 @@ ChartJS.register(
 export default function Dashboard({ energyData }) {
   const [hours, setHours] = useState(8);
 
-  // Calculate total usage dynamically
+  // ===== TOTAL USAGE =====
   const currentUsage =
     energyData.ac +
     energyData.fans +
@@ -41,7 +41,24 @@ export default function Dashboard({ energyData }) {
   const optimizedUsage = Math.round(currentUsage * 0.75);
   const savings = hours * 30 * 1.5;
 
-  // PIE DATA
+  // ===== DYNAMIC ANALYSIS =====
+  const appliances = [
+    { name: "AC", value: energyData.ac },
+    { name: "Fans", value: energyData.fans },
+    { name: "Lights", value: energyData.lights },
+    { name: "Fridge", value: energyData.fridge }
+  ];
+
+  const highest = appliances.reduce((prev, current) =>
+    prev.value > current.value ? prev : current
+  );
+
+  const highestPercentage =
+    currentUsage > 0
+      ? ((highest.value / currentUsage) * 100).toFixed(1)
+      : 0;
+
+  // ===== PIE DATA =====
   const pieData = {
     labels: ["AC", "Fans", "Lights", "Fridge"],
     datasets: [
@@ -57,7 +74,7 @@ export default function Dashboard({ energyData }) {
     ],
   };
 
-  // BAR DATA
+  // ===== BAR DATA =====
   const barData = {
     labels: ["Current Usage", "Optimized Usage"],
     datasets: [
@@ -70,7 +87,7 @@ export default function Dashboard({ energyData }) {
     ],
   };
 
-  // LINE DATA
+  // ===== LINE DATA =====
   const lineData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -118,21 +135,12 @@ export default function Dashboard({ energyData }) {
       {/* SIDEBAR */}
       <aside className="sidebar">
         <h2>⚡ EcoPulse</h2>
-
-        <Link to="/">
-          <button>Enter Data</button>
-        </Link>
-
-        <Link to="/login">
-          <button>Login</button>
-        </Link>
-
-        <Link to="/signup">
-          <button>Sign Up</button>
-        </Link>
+        <Link to="/"><button>Enter Data</button></Link>
+        <Link to="/login"><button>Login</button></Link>
+        <Link to="/signup"><button>Sign Up</button></Link>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
       <main className="main">
 
         {/* KPI SECTION */}
@@ -140,32 +148,73 @@ export default function Dashboard({ energyData }) {
           <div className="card">
             <FaBolt /> {currentUsage} kWh
           </div>
-
           <div className="card">
             <FaMoneyBill /> ₹{currentUsage * 12}
           </div>
-
           <div className="card">
             <FaLeaf /> {Math.round(currentUsage * 0.82)} kg CO₂
           </div>
         </div>
 
-        {/* CHARTS GRID */}
+        {/* ENERGY ANALYSIS */}
+        <div className="card">
+          <h3>📊 Energy Consumption Analysis</h3>
+
+          <p>
+            Your total energy consumption is <strong>{currentUsage} kWh</strong>.
+          </p>
+
+          <p>
+            The highest consuming appliance is <strong>{highest.name}</strong>,
+            contributing <strong>{highestPercentage}%</strong> of total usage.
+          </p>
+
+          <p>
+            Reducing usage of <strong>{highest.name}</strong> can significantly
+            lower your electricity cost and carbon emissions.
+          </p>
+
+          {currentUsage > 100 ? (
+            <p style={{ color: "#ff4d4d" }}>
+              ⚠ High consumption detected. Consider reducing appliance usage.
+            </p>
+          ) : (
+            <p style={{ color: "#00ff88" }}>
+              ✅ Your energy usage is within a reasonable range.
+            </p>
+          )}
+        </div><br></br>
+
+        {/* CHARTS */}
         <div className="chart-grid">
 
           <div className="card">
-            <h3>Energy Distribution</h3>
+            <h3>🥧 Energy Distribution</h3>
             <Pie data={pieData} options={commonOptions} />
+            <p style={{ marginTop: "15px", opacity: 0.85 }}>
+              {highest.name} contributes the largest share of energy usage
+              at {highestPercentage}%. Focus on optimizing this appliance
+              to reduce overall consumption.
+            </p>
           </div>
 
           <div className="card">
-            <h3>Energy Optimization Comparison</h3>
+            <h3>📊 Current vs Optimized Usage</h3>
             <Bar data={barData} options={commonOptions} />
+            <p style={{ marginTop: "15px", opacity: 0.85 }}>
+              By improving efficiency, you could reduce consumption by{" "}
+              <strong>{currentUsage - optimizedUsage} kWh</strong>,
+              saving approximately ₹{(currentUsage - optimizedUsage) * 12}.
+            </p>
           </div>
 
           <div className="card">
             <h3>📈 Monthly Energy Trend</h3>
             <Line data={lineData} options={commonOptions} />
+            <p style={{ marginTop: "15px", opacity: 0.85 }}>
+              The trend shows your energy stabilizing near {currentUsage} kWh.
+              Maintaining a downward trend over time improves sustainability.
+            </p>
           </div>
 
         </div>
@@ -183,7 +232,35 @@ export default function Dashboard({ energyData }) {
           <p>AC Usage: {hours} hrs/day</p>
           <p>Estimated Savings: ₹{savings}</p>
         </div>
+          {/* ENERGY AWARENESS SECTION */}
+<div className="card" style={{ marginTop: "30px" }}>
+  <h3>🌍 Why Saving Energy Matters</h3>
 
+  <p style={{ marginTop: "10px", opacity: 0.9 }}>
+    Energy conservation is not just about reducing electricity bills —
+    it directly impacts the environment and future generations.
+  </p>
+
+  <ul style={{ marginTop: "15px", paddingLeft: "20px" }}>
+    <li>
+      ⚡ Lower energy consumption reduces fossil fuel usage and carbon emissions.
+    </li>
+    <li>
+      💰 Efficient usage saves money on electricity bills over time.
+    </li>
+    <li>
+      🌱 Reduced carbon footprint helps combat climate change.
+    </li>
+    <li>
+      🔌 Sustainable energy practices ensure long-term resource availability.
+    </li>
+  </ul>
+
+  <p style={{ marginTop: "15px", fontWeight: "500" }}>
+    Small daily improvements in energy usage can create a big positive
+    environmental impact.
+  </p>
+</div>
       </main>
     </div>
   );
